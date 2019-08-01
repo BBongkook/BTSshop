@@ -1,0 +1,88 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bts.sp.mapper.UserInfoMapper">
+
+	<!-- 유저리스트 -->
+	<select id="selectUserInfoList" resultType="ui">
+		select * from user_info
+	</select>
+	
+	<!-- 로그인 -->
+	<select id="selectUserInfoByIdPwd" resultType="ui">
+		select * from
+		user_info where ui_id=#{uiId} and ui_pwd=#{uiPwd}
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="selectuserIdByNameEmail" resultType="ui">
+		select ui_id from user_info
+		where ui_name=#{uiName} and ui_email=#{uiEmail}
+	</select>
+	
+	<!--  비밀번호 찾기 -->
+	<select id="selectUserPwdByIdEmail" resultType="ui">
+		select ui_pwd from user_info
+		where ui_id=#{uiId} and ui_email=#{uiEmail}
+	</select>
+	
+	<!-- 유저별 정보조회 -->
+	<select id="selectUserById" resultType="ui">
+		select * from user_info
+		where ui_id=#{uiId}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertUser">
+		insert into
+		user_info(ui_num,ui_name,ui_id,ui_pwd,ui_trans,ui_email,ui_zipcode,ui_addr,ui_addr2,ui_phone)
+		VALUES(seq_user_info_ui_num.nextval,#{uiName},#{uiId},#{uiPwd},#{uiTrans},#{uiEmail},#{uiZipcode},#{uiAddr},#{uiAddr2},#{uiPhone})
+	</insert>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="deleteUser">
+		delete from user_info where ui_num=#{uiNum}
+	</delete>
+	
+	<!-- 임의로 비밀번호 수정 -->
+	<update id="updatePwd">
+	update user_info set
+	ui_pwd = #{uiPwd}
+	where ui_email=#{uiEmail}
+	</update>
+	
+	<!-- 회원정보수정 -->
+	<update id="updateUser">
+		update user_info set
+	<trim  suffixOverrides=",">
+		<if test="uiPwd !=null">
+			ui_pwd=#{uiPwd},
+		</if>
+		<if test="uiName !=null">
+			ui_name=#{uiName},
+		</if>
+		<if test="uiTrans !=null">
+			ui_trans=#{uiTrans},
+		</if>
+		<if test="uiEmail !=null">
+			ui_email=#{uiEmail},
+		</if>
+		<if test="uiPhone !=null">
+			ui_phone=#{uiPhone},
+		</if>
+		<if test="uiAddr !=null">
+			ui_Addr=#{uiAddr},
+		</if>
+		<if test="uiAddr2 !=null">
+			ui_Addr2=#{uiAddr2},
+		</if>
+		<if test="uiZipcode !=null">
+			ui_zipcode=#{uiZipcode},
+		</if>
+		</trim>
+		where ui_id=#{uiId}
+	</update>
+
+
+</mapper>

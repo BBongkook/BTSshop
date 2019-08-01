@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bts.sp.mapper.ProductTableMapper">
+	<!-- 관리자 상품조회 -->
+	<select id="selectProductList" resultType="product">
+		select * from
+		product_table
+	</select>
+	
+	<!-- 인기상품 조회 -->
+	<select id="selectProductListBypCount" resultType="product">
+		select * from (select * from
+		product_table order by p_count desc) where rownum <![CDATA[ <= ]]> 15
+	</select>
+	
+	<!-- 상품명 전체 검색 -->
+	<select id="selectProductByPName" resultType="product">
+		select * from product_table where p_name like '%'||#{pName}||'%'
+	</select>
+	
+	<!-- 상품 분류별 리스트 -->
+	<select id="selectProductDivide" resultType="product">
+		select * from product_table where p_large=#{pLarge} 
+			<if test="pPrice !=null">
+				order by p_price desc
+			</if>
+			<if test="pCount !=null">
+				order by p_count desc
+			</if>
+			<if test="pCredat !=null">
+				order by p_credat desc
+			</if>
+	</select>
+	
+	<!-- 상품 뷰 페이지 -->
+	<select id="selectProductViewPage" resultType="product">
+		select * from product_table where p_num=#{pNum}
+	</select>
+	
+	
+	<select id="selectKategorie" resultType="product">
+	select 
+		<if test="pLarge!=null">
+			p_medium from product_table where p_large=#{pLarge}
+		</if>
+		<if test="pMedium!=null">
+			p_small from product_table where p_medium=#{pMedium}
+		</if>
+		p_large from product_table
+	</select>
+	
+	
+	
+	<insert id="insertProduct">
+		insert into product_table
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			p_num,
+			<if test="pName !=null">
+				p_name,
+			</if>
+			<if test="pAmount !=null">
+				p_amount,
+			</if>
+			<if test="pPrice !=null">
+				p_price,
+			</if>
+			<if test="pImageUri !=null">
+				p_image_uri,
+			</if>
+				p_credat,
+			<if test="pLarge !=null">
+				p_large,
+			</if>
+			<if test="pMedium !=null">
+				p_medium,
+			</if>
+			<if test="pSmall !=null">
+				p_small,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			seq_product_table_p_num.nextval,
+			<if test="pName !=null">
+				#{pName},
+			</if>
+			<if test="pAmount !=null">
+				#{pAmount},
+			</if>
+			<if test="pPrice !=null">
+				#{pPrice},
+			</if>
+			<if test="pImageUri !=null">
+				#{pImageUri},
+			</if>
+				TO_CHAR(sysdate, 'YYYYMMDD'),
+			<if test="pLarge !=null">
+				#{pLarge},
+			</if>
+			<if test="pMedium !=null">
+				#{pMedium},
+			</if>
+			<if test="pSmall !=null">
+				#{pSmall},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 상품 삭제 -->
+	<delete id="deleteProduct">
+		delete from product_table where p_num=#{pNum}
+	</delete>
+
+	<!-- 상품 수정 -->
+	<update id="updateProduct">
+		update product_table set
+		<if test="pName !=null">
+			p_name=#{pName},
+		</if>
+		<if test="pAmount !=null">
+			p_Amount=#{pAmount},
+		</if>
+		<if test="pPrice !=null">
+			p_price=#{pPrice},
+		</if>
+		<if test="pImageUri !=null">
+			p_Image_Uri=#{pImageUri},
+		</if>
+		<if test="pCredat !=null">
+			p_credat=#{pCredat},
+		</if>
+		<if test="pLarge !=null">
+			p_large=#{pLarge},
+		</if>
+		<if test="pMedium !=null">
+			p_medium=#{pMedium},
+		</if>
+		<if test="pSmall !=null">
+			p_small=#{pSmall}
+		</if>
+		where p_num = #{pNum}
+	</update>
+	
+	<!-- 조회수 증가 -->
+	<update id="updateCount">
+		update product_table
+		set p_count=p_count+1
+		where p_num=#{pNum}
+	</update>
+
+
+</mapper>

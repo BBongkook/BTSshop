@@ -1,0 +1,64 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bts.sp.mapper.NoticeTableMapper">
+
+	<!-- 공지조회 -->
+	<select id="selectNoticeList" resultType="notice">
+		select * from notice_table order by nt_num desc
+	</select>
+
+	<!-- 공지등록 -->
+	<insert id="insertNotice">
+		insert into notice_table
+		values((select nvl((max(nt_num)+1),1) from
+		notice_table),#{ntTitle},#{ntContent},'관리자'
+		,to_char(SYSDATE,'YYYY.MM.DD'),0)
+	</insert>
+
+	<!-- 공지삭제 -->
+	<delete id="deleteNotice">
+		delete from notice_table
+		where nt_num=#{ntNum}
+	</delete>
+
+	<update id="updateUser">
+		update user_info set
+		<trim suffixOverrides=",">
+			<if test="uiPwd !=null">
+				ui_pwd=#{uiPwd},
+			</if>
+			<if test="uiName !=null">
+				ui_name=#{uiName},
+			</if>
+			<if test="uiTrans !=null">
+				ui_trans=#{uiTrans},
+			</if>
+			<if test="uiEmail !=null">
+				ui_email=#{uiEmail},
+			</if>
+			<if test="uiPhone !=null">
+				ui_phone=#{uiPhone},
+			</if>
+			<if test="uiAddr !=null">
+				ui_Addr=#{uiAddr},
+			</if>
+			<if test="uiAddr2 !=null">
+				ui_Addr2=#{uiAddr2},
+			</if>
+			<if test="uiZipcode !=null">
+				ui_zipcode=#{uiZipcode},
+			</if>
+		</trim>
+		where ui_id=#{uiId}
+	</update>
+
+	<update id="updateNtCount">
+		update notice_table
+		set nt_count=NT_COUNT+1
+		where nt_num =#{ntNum}
+	</update>
+
+
+</mapper>

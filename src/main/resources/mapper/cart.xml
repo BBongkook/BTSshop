@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bts.sp.mapper.CartTableMapper">
+
+	
+	<!-- 장바구니 조회 -->
+	<select id="selectCartListById" resultType="cart">
+	select c.*,p.P_NAME,p.P_PRICE,p.P_IMAGE_URI,p.P_PRICE
+	from cart_table c, product_table p 
+	where c.p_num=p.p_num and c.ui_id=#{uiId}
+	</select>
+	<!-- 장바구니에 추가하기  -->
+	<insert id="insertCart">
+		insert into cart_table(c_id, ui_id, p_num, c_amount, c_price)
+		values(seq_cart_table_c_id.nextval,#{uiId},#{pNum},#{cAmount},
+		((select p_price from product_table where p_num=#{pNum})*#{cAmount}))
+	</insert>
+	<!-- 장바구니 수정 -->
+<!-- 	<update id="updateCart">
+		update cart_table
+		set c_amount=#{cAmount}
+		where c_id = #{cId}
+	</update> -->
+	<update id="updatePrice">
+		update cart_table
+		set c_price= ((select p_price from product_table where p_num=#{pNum})*#{cAmount}),c_amount=#{cAmount}
+		where c_id = #{cId}
+	</update>
+	<delete id="delCart">
+		delete from cart_table where c_id=#{cId}
+	</delete>
+	<delete id="deluiId">
+		delete from cart_table where ui_id=#{uiId}
+	</delete>
+
+	
+
+
+</mapper>

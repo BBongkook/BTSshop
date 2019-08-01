@@ -1,0 +1,63 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bts.sp.mapper.UserInfoMapper">
+
+	<select id="selectUserInfoList" resultType="ui">
+		select * from user_info
+	</select>
+	
+	<select id="selectUserInfoByIdPwd" resultType="ui">
+		select * from
+		user_info where ui_id=#{uiId} and ui_pwd=#{uiPwd}
+	</select>
+	
+	<select id="selectUserById" resultType="ui">
+		select * from user_info
+		where ui_id=#{uiId}
+	</select>
+
+	<insert id="insertUser">
+		insert into
+		user_info(ui_num,ui_name,ui_id,ui_pwd,ui_trans,ui_email,ui_zipcode,ui_addr,ui_addr2,ui_phone)
+		VALUES(seq_user_info_ui_num.nextval,#{uiName},#{uiId},#{uiPwd},#{uiTrans},#{uiEmail},#{uiZipcode},#{uiAddr},#{uiAddr2},#{uiPhone})
+	</insert>
+	
+	<delete id="deleteUser">
+		delete from user_info where ui_num=#{uiNum}
+	</delete>
+	
+	<update id="updateUser">
+		update user_info set
+	<trim  suffixOverrides=",">
+		<if test="uiPwd !=null">
+			ui_pwd=#{uiPwd},
+		</if>
+		<if test="uiName !=null">
+			ui_name=#{uiName},
+		</if>
+		<if test="uiTrans !=null">
+			ui_trans=#{uiTrans},
+		</if>
+		<if test="uiEmail !=null">
+			ui_email=#{uiEmail},
+		</if>
+		<if test="uiPhone !=null">
+			ui_phone=#{uiPhone},
+		</if>
+		<if test="uiAddr !=null">
+			ui_Addr=#{uiAddr},
+		</if>
+		<if test="uiAddr2 !=null">
+			ui_Addr2=#{uiAddr2},
+		</if>
+		<if test="uiZipcode !=null">
+			ui_zipcode=#{uiZipcode},
+		</if>
+		</trim>
+		where ui_id=#{uiId}
+	</update>
+
+
+</mapper>

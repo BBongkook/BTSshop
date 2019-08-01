@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="hikariDS" class="com.zaxxer.hikari.HikariDataSource">
+		<property name="jdbcUrl"
+			value="jdbc:oracle:thin:@bts.chrnu6fdargl.ap-northeast-2.rds.amazonaws.com:1588:ORCL" />
+		<property name="username" value="bts" />
+		<property name="password" value="1q2w3e4r!" />
+		<property name="driverClassName"
+			value="oracle.jdbc.OracleDriver" />
+		<property name="maximumPoolSize" value="10" />
+		<property name="minimumIdle" value="5" />
+	</bean>
+	<bean id="ssFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="hikariDS" />
+		<property name="configLocation" value="classpath:config/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="ssFactory" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.bts.sp.mapper" />
+	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="10485760"/>
+    	<property name="maxUploadSizePerFile" value="10485760"/>
+    	<property name="maxInMemorySize" value="0"/>
+	</bean>
+	
+
+			
+
+	<!-- <bean id ="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource" ref="hikariDS"/> </bean> <tx:advice id="txAdvice" 
+		transaction-manager="transactionManager"> <tx:attributes> <tx:method name="save*" 
+		rollback-for="Exception"/> </tx:attributes> </tx:advice> <aop:config> <aop:pointcut 
+		id="txPointcut" expression="execution(* com.osf.sp.service.impl.*ServiceImpl.*(..))"/> 
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/> </aop:config> -->
+</beans>
